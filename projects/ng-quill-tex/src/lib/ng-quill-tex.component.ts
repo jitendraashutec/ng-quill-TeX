@@ -23,6 +23,7 @@ export class NgQuillTexComponent implements OnInit, QuillImageUpload {
   @Input() content?: any;
   @Input() editorContent: any;
   @Input() isMobile: boolean;
+  @Input() customToolbarPosition = 'top';
 
   quillEditorRef;
 
@@ -32,7 +33,7 @@ export class NgQuillTexComponent implements OnInit, QuillImageUpload {
     this.modules = {
       toolbar: {
         container: [
-          ['bold', 'italic', 'underline', 'strike', 'code'],
+          ['bold', 'italic', 'underline', 'strike', 'code', 'image'],
           [{ 'color': [] }],
         ]
       },
