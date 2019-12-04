@@ -24,6 +24,7 @@ export class NgQuillTexComponent implements OnInit, QuillImageUpload {
   @Input() editorContent: any;
   @Input() isMobile: boolean;
   @Input() customToolbarPosition = 'top';
+  @Input() styles: any;
 
   quillEditorRef;
 

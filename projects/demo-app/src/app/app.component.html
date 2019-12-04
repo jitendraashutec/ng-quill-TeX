@@ -1,5 +1,5 @@
 <div *ngIf="show">
-  <ng-quill-tex [modules]="quillConfig" (textChanged)="onTextChanged($event)" 
+  <ng-quill-tex [styles]="{height: '50px'}" [modules]="quillConfig" (textChanged)="onTextChanged($event)" 
   (fileUploaded)="fileUploaded($event)" [customToolbarPosition]="'bottom'" [imageUrl]="quillImageUrl" [content]="editorContent" [isMobile]="true">
       <span class="ql-formats">
         <button type="button" class="ql-code-block"></button>
