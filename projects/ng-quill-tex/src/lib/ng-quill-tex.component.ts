@@ -25,6 +25,7 @@ export class NgQuillTexComponent implements OnInit, QuillImageUpload {
   @Input() isMobile: boolean;
   @Input() customToolbarPosition = 'top';
   @Input() styles: any;
+  @Output() editorLoadFinished = new EventEmitter<boolean>();
 
   quillEditorRef;
 
@@ -72,6 +73,7 @@ export class NgQuillTexComponent implements OnInit, QuillImageUpload {
 
   // Get Editor instatnce when editor is created
   getEditorInstance(editorInstance: any) {
+    this.editorLoadFinished.emit(true);
     this.quillEditorRef = editorInstance;
     if (this.content) {
       setTimeout(() => {
