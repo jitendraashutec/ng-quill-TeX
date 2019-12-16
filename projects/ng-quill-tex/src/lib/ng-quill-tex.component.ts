@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, Output, EventEmitter, ChangeDetectorRef, OnChanges, SimpleChanges } from '@angular/core';
 import { QuillEditorComponent } from 'ngx-quill';
 import Quill from 'quill';
 import { debounceTime } from 'rxjs/operators';
@@ -12,7 +12,7 @@ import { QuillImageUpload } from './models/quill-image-upload';
   templateUrl: './ng-quill-tex.component.html',
   styles: []
 })
-export class NgQuillTexComponent implements OnInit, QuillImageUpload {
+export class NgQuillTexComponent implements OnInit, QuillImageUpload, OnChanges {
 
   @Input() modules;
   @Input() _imageUrl;
@@ -26,6 +26,7 @@ export class NgQuillTexComponent implements OnInit, QuillImageUpload {
   @Input() customToolbarPosition = 'top';
   @Input() styles: any;
   @Output() editorLoadFinished = new EventEmitter<boolean>();
+  @Input() setFocus;
 
   quillEditorRef;
 
@@ -77,9 +78,9 @@ export class NgQuillTexComponent implements OnInit, QuillImageUpload {
     this.quillEditorRef = editorInstance;
     if (this.content) {
       setTimeout(() => {
-        this.editorContent = this.content;
+        this.editorContent = this.content; 
         this.cd.markForCheck();
-      }, 10);
+      }, 10);      
     }
   }
 
@@ -119,6 +120,12 @@ export class NgQuillTexComponent implements OnInit, QuillImageUpload {
     const range = quillEditorRef.getSelection();
     const imageIndex = range.index;
     quillEditorRef.insertEmbed(imageIndex, 'image', imageUrl);
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+     if (changes.setFocus && this.setFocus && this.quillEditorRef) {
+        this.quillEditorRef.focus();
+     }
   }
 
 }
