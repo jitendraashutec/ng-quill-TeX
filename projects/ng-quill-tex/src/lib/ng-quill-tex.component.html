@@ -1,6 +1,9 @@
 <div [formGroup]="group" *ngIf="group else noGroup">
   <quill-editor [styles]="styles ? styles : {}"  [customToolbarPosition]="customToolbarPosition" [modules]="modules" #quillEditior trackChanges="all" format="object" (onEditorCreated)="getEditorInstance($event)"
     [formControlName]="controlName">
+    <div *ngIf="customToolbarPosition === 'bottom'" quill-editor-toolbar>
+      <ng-content></ng-content>
+    </div>
   </quill-editor>
 </div>
 

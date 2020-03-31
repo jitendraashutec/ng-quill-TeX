@@ -4,8 +4,11 @@ import Quill from 'quill';
 import { debounceTime } from 'rxjs/operators';
 import { QuillInitializeService } from './services/quillInitialize.service';
 import BlotFormatter from 'quill-blot-formatter';
+// import DeleteBlotFormatter from 'quill-delete-blog-formatter';
 import { FormGroup, FormControl } from '@angular/forms';
 import { QuillImageUpload } from './models/quill-image-upload';
+
+declare const QuillDeleteBlotFormatter: any;
 
 @Component({
   selector: 'ng-quill-tex',
@@ -25,7 +28,7 @@ export class NgQuillTexComponent implements OnInit, QuillImageUpload, OnChanges 
   @Input() isMobile: boolean;
   @Input() customToolbarPosition = 'top';
   @Input() styles: any;
-  @Output() editorLoadFinished = new EventEmitter<boolean>();
+  public oWebViewInterface = (window as any).nsWebViewInterface;
   @Input() setFocus;
 
   quillEditorRef;
@@ -67,20 +70,37 @@ export class NgQuillTexComponent implements OnInit, QuillImageUpload, OnChanges 
           debounceTime(400),
         )
         .subscribe((data) => {
-          this.onTextChanged({ 'html': data.html, 'delta': data.content.ops });
+
+          const inserted = this.getImgUrls(data.content);
+          let imageParsedName = '';
+          let currrentContents = data.content;
+          const deleted = this.getImgUrls(currrentContents.diff(data.oldDelta));
+          if (deleted.length > 0) {
+            let deletedImageUrl = deleted[0];
+            const splitString = deletedImageUrl.split("/");
+            const url = splitString[(splitString.length - 1)].split("?");
+
+            if (url) {
+              imageParsedName = url[0];
+            }
+          }
+          this.onTextChanged({ 'html': data.html, 'delta': data.content.ops, 'imageParsedName': imageParsedName });
         });
     }, 0);
   }
 
+  getImgUrls(delta) {
+    return delta.ops.filter(i => i.insert && i.insert.image).map(i => i.insert.image);
+  }
+
   // Get Editor instatnce when editor is created
   getEditorInstance(editorInstance: any) {
-    this.editorLoadFinished.emit(true);
     this.quillEditorRef = editorInstance;
     if (this.content) {
       setTimeout(() => {
-        this.editorContent = this.content; 
+        this.editorContent = this.content;
         this.cd.markForCheck();
-      }, 10);      
+      }, 10);
     }
   }
 
@@ -123,9 +143,17 @@ export class NgQuillTexComponent implements OnInit, QuillImageUpload, OnChanges 
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-     if (changes.setFocus && this.setFocus && this.quillEditorRef) {
-        this.quillEditorRef.focus();
-     }
+    if (changes.setFocus && this.setFocus && this.quillEditorRef) {
+      this.quillEditorRef.focus();
+    }
+  }
+
+  // emit editor load finished event
+  editorLoadFinished(event) {
+    // this.ngZone.run(() => {
+    this.oWebViewInterface.emit('editorLoadFinished', event);
+    this.cd.detectChanges();
+    // });
   }
 
 }

@@ -13,7 +13,12 @@ export class AppComponent implements OnInit, AfterViewInit {
   show = false;
   quillImageUrl = '';
   answerIndex: number;
+  imageArray = ['https://rwa-trivia-dev-e57fc.firebaseapp.com/v1/question/getQuestionImage/1584424319539?d=1584424319960', 
+  'https://rwa-trivia-dev-e57fc.firebaseapp.com/v1/question/getQuestionImage/1559802082816?d=1584424319961']
+  imageIndex = 0;
   public oWebViewInterface = (window as any).nsWebViewInterface;
+
+  
 
   // Math quill options
   mathOptions = {
@@ -48,6 +53,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     },
     mathEditor: { mathOptions: this.mathOptions },
     blotFormatter: {},
+    // deleteBlotFormatter: {},
     syntax: true
   };
 
@@ -55,12 +61,12 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   // Text change in quill editor
-  onTextChanged(text) {
-    this.ngZone.run(() => {
-      text.answerIndex = this.answerIndex;
-      this.oWebViewInterface.emit('quillContent', text);
-      this.cd.detectChanges();
-    });
+  onTextChanged(delta, oldDelta, sourc) {
+    // this.ngZone.run(() => {
+    //   text.answerIndex = this.answerIndex;
+    //   this.oWebViewInterface.emit('quillContent', text);
+    //   this.cd.detectChanges();
+    // });
 
   }
 
@@ -95,8 +101,16 @@ export class AppComponent implements OnInit, AfterViewInit {
   // Image Upload
   fileUploaded(quillImageUpload: any) {
     if (quillImageUpload.isMobile) {
-      this.oWebViewInterface.emit('uploadImageStart', true);
+      // this.oWebViewInterface.emit('uploadImageStart', true);
     }
+
+    this.ngZone.run(() => {
+      const url = 'https://storage.googleapis.com/stateless-campfire-pictures/2019/05/e4629f8e-defaultuserimage-15579880664l8pc.jpg';
+      this.imageIndex = (this.imageIndex) ? 0 : 1;
+      this.quillImageUrl = this.imageArray[this.imageIndex];
+    });
+
+
   }
 
   ngAfterViewInit(): void {
