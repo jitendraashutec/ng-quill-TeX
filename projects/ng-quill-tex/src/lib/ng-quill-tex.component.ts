@@ -4,11 +4,8 @@ import Quill from 'quill';
 import { debounceTime } from 'rxjs/operators';
 import { QuillInitializeService } from './services/quillInitialize.service';
 import BlotFormatter from 'quill-blot-formatter';
-// import DeleteBlotFormatter from 'quill-delete-blog-formatter';
 import { FormGroup, FormControl } from '@angular/forms';
 import { QuillImageUpload } from './models/quill-image-upload';
-
-declare const QuillDeleteBlotFormatter: any;
 
 @Component({
   selector: 'ng-quill-tex',
